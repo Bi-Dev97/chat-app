@@ -6,6 +6,7 @@ const mongoose = require("mongoose"); /**We use mongoose to be connected
 const userRoute = require("./Routes/userRoute");
 const chatRoute = require("./Routes/chatRoute");
 const messageRoute = require("./Routes/messageRoute");
+const notificationRoute = require("./Routes/notificationRoute");
 
 /**Creates an Express application. The express() 
 function is a top-level function exported by
@@ -29,6 +30,7 @@ app.use(cors());
 app.use("/api/users", userRoute);
 app.use("/api/chats", chatRoute);
 app.use("/api/messages", messageRoute);
+app.use("/api/notifications", notificationRoute);
 
 /**APIs and routes for CRUD */
 app.get("/", (req, res) => {

@@ -72,3 +72,44 @@ export const getRequest = async (url) => {
 
   return data;
 };
+
+export const putRequest = async (url, body) => {
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    let message = "An error occurred...";
+    if (data?.message) {
+      message = data.message;
+    }
+    return { error: true, message };
+  }
+
+  return data;
+};
+
+export const deleteRequest = async (url) => {
+  await fetch(url, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json(); // If the server responds with JSON data (optional)
+    })
+    .then((data) => {
+      // Handle the response data here (data returned by the server) if needed
+      console.log("Resource deleted successfully:", data);
+    })
+    .catch((error) => {
+      // Handle errors here
+      console.error("Error deleting resource:", error);
+    });
+};

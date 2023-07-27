@@ -42,4 +42,23 @@ const deleteMessage = async (req, res) => {
   }
 };
 
-module.exports = { createMessage, getMessages, deleteMessage };
+// Delete all messages
+const deleteAllMessages = async (req, res) => {
+  const { senderId } = req.params;
+
+  try {
+    // Delete all messages with the given senderId
+    const result = await Message.deleteMany({ senderId });
+
+    // Check if any messages were deleted
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "No messages found for the provided senderId." });
+    }
+
+    return res.json({ message: "All messages for the provided senderId have been deleted." });
+  } catch (error) {
+    return res.status(500).json({ error: "An error occurred while deleting messages." });
+  }
+};
+
+module.exports = { createMessage, getMessages, deleteMessage, deleteAllMessages };

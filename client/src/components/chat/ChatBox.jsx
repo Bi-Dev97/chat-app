@@ -19,7 +19,7 @@ const ChatBox = () => {
   const scroll = useRef();
   console.log("text", textMessage);
 
-  // The page will scroll to the current page or message whenever 
+  // The page will scroll to the current page or message whenever
   // messages change
   useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,8 +38,23 @@ const ChatBox = () => {
 
   return (
     <Stack gap={4} className="chat-box">
-      <div className="chat-header">
-        <strong>{recipientUser?.name}</strong>
+      <div className="chat-header d-flex justify-content-between">
+        <div className="flex-grow-1 text-center">
+          <strong>{recipientUser?.name}</strong>
+        </div>
+        <span title="Delete all messages">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="bi bi-trash3-fill"
+            viewBox="0 0 16 16"
+            title="Delete all chat messages"
+          >
+            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+          </svg>
+        </span>
       </div>
       <Stack gap={3} className="messages">
         {messages &&
@@ -48,8 +63,8 @@ const ChatBox = () => {
               key={index}
               className={`${
                 message?.senderId === user?._id
-                  ? "message self align-self-end flex-grow-0"
-                  : "message align-self-start flex-grow-0"
+                  ? "message msg self align-self-end flex-grow-0"
+                  : "message msg align-self-start flex-grow-0"
               }`}
               ref={scroll}
             >
@@ -57,6 +72,17 @@ const ChatBox = () => {
               <span className="message-footer">
                 {moment(message.createdAt).calendar()}
               </span>
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-trash2-fill"
+                viewBox="0 0 16 16"
+              >
+                <path d="M2.037 3.225A.703.703 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2a.702.702 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671L2.037 3.225zm9.89-.69C10.966 2.214 9.578 2 8 2c-1.58 0-2.968.215-3.926.534-.477.16-.795.327-.975.466.18.14.498.307.975.466C5.032 3.786 6.42 4 8 4s2.967-.215 3.926-.534c.477-.16.795-.327.975-.466-.18-.14-.498-.307-.975-.466z" />
+              </svg>
             </Stack>
           ))}
       </Stack>

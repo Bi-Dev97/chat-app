@@ -18,6 +18,7 @@ const UserChat = ({ chat, user }) => {
   const thisUserNotifications = unreadNotifications?.filter(
     (n) => n.senderId == recipientUser?._id
   );
+  console.log(thisUserNotifications);
   const isOnline = onlineUsers?.some(
     (user) => user?.userId === recipientUser?._id
   );
