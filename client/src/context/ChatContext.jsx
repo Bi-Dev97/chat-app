@@ -91,6 +91,8 @@ export const ChatContextProvider = ({ children, user }) => {
     //we run it again
   }, [socket]);
 
+  /**Notifications apis */
+
   // Create user's notifications
   const createNotifications = useCallback(
     async (data) => {
@@ -125,13 +127,21 @@ export const ChatContextProvider = ({ children, user }) => {
 
   // Delete all notifications
   const deleteNotifications = useCallback(async (userId) => {
-    await deleteRequest(`${baseUrl}/notifications/${userId}`);
+    await deleteRequest(`${baseUrl}/notifications/many/${userId}`);
   }, []);
 
   // Get user's notifications
   const getUserNotifications = async () => {
     const response = await getRequest(`${baseUrl}/notifications/${user?._id}`);
     setNotifications(response);
+  };
+
+  // Mark sender's notifications as read
+  const markSenderAllNotificationsAsRead = async (senderId) => {
+    console.log(senderId);
+    const response = await putRequest(
+      `${baseUrl}/notifications/sender-notifications/${senderId}`
+    );
   };
 
   //Send message in real time
@@ -239,44 +249,45 @@ export const ChatContextProvider = ({ children, user }) => {
     getUsers();
   }, [userChats]);
 
-  useEffect(() => {
-    const getUserChats = async () => {
-      if (user?._id) {
-        setIsUserChatsLoading(true);
-        setUserChatsError(null);
+  const getUserChats = useCallback(async () => {
+    if (user?._id) {
+      setIsUserChatsLoading(true);
+      setUserChatsError(null);
 
-        const response = await getRequest(`${baseUrl}/chats/${user?._id}`);
+      const response = await getRequest(`${baseUrl}/chats/${user?._id}`);
 
-        setIsUserChatsLoading(false);
+      setIsUserChatsLoading(false);
 
-        if (response.error) {
-          return setUserChatsError(response);
-        }
-
-        setUserChats(response);
+      if (response.error) {
+        return setUserChatsError(response);
       }
-    };
-    getUserChats();
+
+      setUserChats(response);
+    }
   }, [user, notifications]);
 
   useEffect(() => {
-    const getMessages = async () => {
-      setIsMessagesLoading(true);
-      setMessagesError(null);
+    getUserChats();
+  }, [user, notifications]);
 
-      const response = await getRequest(
-        `${baseUrl}/messages/${currentChat?._id}`
-      );
+  const getMessages = useCallback(async () => {
+    setIsMessagesLoading(true);
+    setMessagesError(null);
 
-      setIsMessagesLoading(false);
+    const response = await getRequest(
+      `${baseUrl}/messages/${currentChat?._id}`
+    );
 
-      if (response.error) {
-        return setMessagesError(response);
-      }
+    setIsMessagesLoading(false);
 
-      setMessages(response);
-    };
+    if (response.error) {
+      return setMessagesError(response);
+    }
 
+    setMessages(response);
+  }, [currentChat]);
+
+  useEffect(() => {
     getMessages();
   }, [currentChat]);
 
@@ -349,14 +360,14 @@ export const ChatContextProvider = ({ children, user }) => {
       // mark notification as read
       const mNotifications = notifications.map((el) => {
         if (n.senderId === el.senderId) {
-          return { ...n, isRead: true };
+          markUserNotificationAsRead(el?._id);
         } else {
           return el;
         }
       });
 
       updateCurrentChat(desiredChat);
-      setNotifications(mNotifications);
+      getUserNotifications();
     },
     []
   );
@@ -368,18 +379,36 @@ export const ChatContextProvider = ({ children, user }) => {
         let notification;
         thisUserNotifications.forEach((n) => {
           if (n.senderId === el.senderId) {
-            notification = { ...n, isRead: true };
+            markSenderAllNotificationsAsRead(n?.senderId);
           } else {
             notification = el;
           }
         });
         return notification;
       });
-      setNotifications(mNotifications);
+      getUserNotifications();
     },
     []
   );
 
+  // Delete a chat
+  const deleteUserChat = useCallback(async (userId) => {
+    const response = await deleteRequest(`${baseUrl}/chats/delete/${userId}`);
+  }, []);
+
+  /**Messages apis */
+  const deleteMessage = useCallback(async (messageId) => {
+    
+    const response = await deleteRequest(
+      `${baseUrl}/messages/delete/${messageId}`
+    );
+  }, []);
+
+  const deleteAllMessages = useCallback(async (chatId) => {
+    const response = await deleteRequest(
+      `${baseUrl}/messages/delete/many/${chatId}`
+    );
+  }, []);
   return (
     <ChatContext.Provider
       value={{
@@ -401,6 +430,13 @@ export const ChatContextProvider = ({ children, user }) => {
         markNotificationAsRead,
         markThisUserNotificationsAsRead,
         getUserNotifications,
+        deleteNotification,
+        deleteNotifications,
+        deleteUserChat,
+        getUserChats,
+        deleteMessage,
+        deleteAllMessages,
+        getMessages,
       }}
     >
       {children}

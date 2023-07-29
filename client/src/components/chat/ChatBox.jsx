@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -9,8 +10,15 @@ import InputEmoji from "react-input-emoji";
 
 const ChatBox = () => {
   const { user } = useContext(AuthContext);
-  const { currentChat, messages, isMessagesLoading, sendTextMessage } =
-    useContext(ChatContext);
+  const {
+    currentChat,
+    messages,
+    isMessagesLoading,
+    sendTextMessage,
+    deleteAllMessages,
+    deleteMessage,
+    getMessages,
+  } = useContext(ChatContext);
   console.log(currentChat, user);
   const { recipientUser } = useFetchRecipientUser(currentChat, user);
   const [textMessage, setTextMessage] = useState("");
@@ -18,6 +26,10 @@ const ChatBox = () => {
   // With the useRef's hook we will track the position of our page
   const scroll = useRef();
   console.log("text", textMessage);
+
+  useEffect(() => {
+    getMessages();
+  }, []);
 
   // The page will scroll to the current page or message whenever
   // messages change
@@ -51,6 +63,12 @@ const ChatBox = () => {
             className="bi bi-trash3-fill"
             viewBox="0 0 16 16"
             title="Delete all chat messages"
+            onClick={() => {
+              deleteAllMessages(currentChat?._id);
+              setTimeout(() => {
+                getMessages();
+              }, 100);
+            }}
           >
             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
           </svg>
@@ -80,6 +98,12 @@ const ChatBox = () => {
                 fill="currentColor"
                 className="bi bi-trash2-fill"
                 viewBox="0 0 16 16"
+                onClick={() => {
+                  deleteMessage(message?._id);
+                  setTimeout(() => {
+                    getMessages();
+                  }, 100);
+                }}
               >
                 <path d="M2.037 3.225A.703.703 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2a.702.702 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671L2.037 3.225zm9.89-.69C10.966 2.214 9.578 2 8 2c-1.58 0-2.968.215-3.926.534-.477.16-.795.327-.975.466.18.14.498.307.975.466C5.032 3.786 6.42 4 8 4s2.967-.215 3.926-.534c.477-.16.795-.327.975-.466-.18-.14-.498-.307-.975-.466z" />
               </svg>

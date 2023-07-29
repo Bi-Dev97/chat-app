@@ -11,6 +11,6 @@ const router = express.Router();
 router.post("/", createMessage);
 router.get("/:chatId", getMessages);
 router.delete("/delete/:messageId", deleteMessage);
-router.delete("/delete/:senderId", deleteAllMessages);
+router.delete("/delete/many/:chatId", deleteAllMessages);
 
 module.exports = router;

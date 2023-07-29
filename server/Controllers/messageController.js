@@ -44,11 +44,11 @@ const deleteMessage = async (req, res) => {
 
 // Delete all messages
 const deleteAllMessages = async (req, res) => {
-  const { senderId } = req.params;
+  const { chatId } = req.params;
 
   try {
     // Delete all messages with the given senderId
-    const result = await Message.deleteMany({ senderId });
+    const result = await messageModel.deleteMany({ chatId });
 
     // Check if any messages were deleted
     if (result.deletedCount === 0) {

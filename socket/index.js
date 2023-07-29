@@ -72,6 +72,16 @@ communication with specific clients. */
     }
   });
 
+  // Add Delete Message Event
+  socket.on("deleteMessage", (messageId, messages) => {
+    // Your code to delete the message from the server's storage
+    // For example, if messages are stored in an array, you can remove the message with the provided messageId.
+    messages = messages.filter((message) => message.id !== messageId);
+
+    // After deleting the message, broadcast the delete action to all connected clients
+    io.emit("messageDeleted", (messages));
+  });
+
   // Disconnect the user whenever he is logout or disconnect
   // By removing him from the online users's array
   socket.on("disconnect", () => {

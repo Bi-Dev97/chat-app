@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { ChatContext } from "../context/ChatContext";
 import { Container, Stack } from "react-bootstrap";
 import UserChat from "../components/chat/UserChat";
@@ -10,8 +11,19 @@ import ChatBox from "../components/chat/ChatBox";
 
 const Chat = () => {
   const { user } = useContext(AuthContext);
-  const { userChats, isUserChatsLoading, userChatsError, updateCurrentChat } =
-    useContext(ChatContext);
+  const {
+    userChats,
+    isUserChatsLoading,
+    userChatsError,
+    updateCurrentChat,
+    getUserNotifications,
+    deleteUserChat,
+    getUserChats,
+  } = useContext(ChatContext);
+
+  useEffect(() => {
+    getUserNotifications();
+  }, []);
 
   /**In the provided code snippet, the slice() method
    * is used to create a shallow copy of the userChats array.
@@ -40,6 +52,12 @@ const Chat = () => {
                     <UserChat chat={chat} user={user} />
                   </div>
                   <svg
+                    onClick={() => {
+                      deleteUserChat(user?._id);
+                      setTimeout(() => {
+                        getUserChats();
+                      }, 100);
+                    }}
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="16"
