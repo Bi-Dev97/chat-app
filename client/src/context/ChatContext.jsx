@@ -29,7 +29,6 @@ export const ChatContextProvider = ({ children, user }) => {
   const [notifications, setNotifications] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
 
-  console.log("notifications", notifications);
 
   // Initial socket
   useEffect(() => {
@@ -100,12 +99,9 @@ export const ChatContextProvider = ({ children, user }) => {
         `${baseUrl}/notifications`,
         JSON.stringify(data)
       );
-      console.log(data, response);
     },
     [messages]
   );
-
-  console.log(notifications);
 
   // Mark notification as read
   const markUserNotificationAsRead = useCallback(async (notificationId) => {
@@ -116,7 +112,6 @@ export const ChatContextProvider = ({ children, user }) => {
 
   //Mark all notifications as read
   const markUserAllNotificationsAsRead = useCallback(async (userId) => {
-    console.log(userId);
     await putRequest(`${baseUrl}/notifications/mark-read/${userId}`);
   }, []);
 
@@ -138,7 +133,6 @@ export const ChatContextProvider = ({ children, user }) => {
 
   // Mark sender's notifications as read
   const markSenderAllNotificationsAsRead = async (senderId) => {
-    console.log(senderId);
     const response = await putRequest(
       `${baseUrl}/notifications/sender-notifications/${senderId}`
     );
@@ -358,7 +352,7 @@ export const ChatContextProvider = ({ children, user }) => {
       });
 
       // mark notification as read
-      const mNotifications = notifications.map((el) => {
+      notifications.map((el) => {
         if (n.senderId === el.senderId) {
           markUserNotificationAsRead(el?._id);
         } else {
@@ -375,7 +369,7 @@ export const ChatContextProvider = ({ children, user }) => {
   const markThisUserNotificationsAsRead = useCallback(
     (thisUserNotifications, notifications) => {
       // mark notifications as read
-      const mNotifications = notifications.map((el) => {
+      notifications.map((el) => {
         let notification;
         thisUserNotifications.forEach((n) => {
           if (n.senderId === el.senderId) {
@@ -398,7 +392,6 @@ export const ChatContextProvider = ({ children, user }) => {
 
   /**Messages apis */
   const deleteMessage = useCallback(async (messageId) => {
-    
     const response = await deleteRequest(
       `${baseUrl}/messages/delete/${messageId}`
     );

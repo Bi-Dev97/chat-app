@@ -25,7 +25,6 @@ const ChatBox = () => {
 
   // With the useRef's hook we will track the position of our page
   const scroll = useRef();
-  console.log("text", textMessage);
 
   useEffect(() => {
     getMessages();

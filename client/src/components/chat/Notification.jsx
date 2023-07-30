@@ -19,8 +19,6 @@ const Notification = () => {
     deleteNotifications,
   } = useContext(ChatContext);
 
-  console.log(notifications);
-
   const unreadNotifications = unreadNotificationsFunc(notifications);
   const modifiedNotifications = notifications.map((n) => {
     const sender = allUsers.find((user) => user._id == n.senderId);
@@ -34,9 +32,6 @@ const Notification = () => {
   const sortedNotifications = modifiedNotifications
     ?.slice()
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  console.log("un", unreadNotifications);
-  console.log("mn", modifiedNotifications);
 
   return (
     <div className="notifications">
