@@ -19,7 +19,7 @@ const ChatBox = () => {
     deleteMessage,
     getMessages,
   } = useContext(ChatContext);
-  console.log(currentChat, user);
+  
   const { recipientUser } = useFetchRecipientUser(currentChat, user);
   const [textMessage, setTextMessage] = useState("");
 
